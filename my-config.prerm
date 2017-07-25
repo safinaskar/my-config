@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+while read -r FILE; do
+	rm -f -- "$FILE"
+done < /opt/tpm-store/share/my-config/to-delete
+
+while read -r FILE; do
+	sed -i 's/^.* #my-config# //' "$FILE"
+done < /opt/tpm-store/share/my-config/to-restore
+
+rm -r /opt/tpm-store/share/my-config

@@ -1,0 +1,3 @@
+PACKAGE='safinaskar/my-config'
+INSTALL='chmod +x my-config.prerm my-config.postinst && cp my-config.prerm my-config.postinst "$INFO"'
+ARCH='all'

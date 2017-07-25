@@ -1,0 +1,37 @@
+#!/bin/sh
+
+set -e
+
+mkdir -p /opt/tpm-store/share/my-config
+
+create(){
+	printf '%s\n' "$1" >> /opt/tpm-store/share/my-config/to-delete
+	cat > "$1"
+}
+
+add_line(){
+	printf '%s\n' "$1" >> /opt/tpm-store/share/my-config/to-restore
+	printf '%s\n' "$2 #my-config# " >> "$1"
+}
+
+####
+
+mkdir -p /root /home /etc/skel
+
+for I in /root /home/* /etc/skel; do
+	[ -e "$I" ] && create "$I/.hushlogin" < /dev/null
+done
+
+####
+
+mkdir -p /etc/apt/apt.conf.d
+
+create /etc/apt/apt.conf.d/99my-config << EOF
+APT::Install-Recommends "false";
+EOF
+
+####
+
+mkdir -p /etc
+
+add_line /etc/tmux.conf 'set-window-option -g alternate-screen off'
