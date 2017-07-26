@@ -4,34 +4,36 @@ set -e
 
 mkdir -p /opt/tpm-store/share/my-config
 
-create(){
-	printf '%s\n' "$1" >> /opt/tpm-store/share/my-config/to-delete
-	cat > "$1"
-}
-
-add_line(){
-	printf '%s\n' "$1" >> /opt/tpm-store/share/my-config/to-restore
-	printf '%s\n' "$2 #my-config# " >> "$1"
-}
-
 ####
 
 mkdir -p /root /home /etc/skel
 
+# На DigitalOcean /root/.bashrc такой же, как и у юзеров
 for I in /root /home/* /etc/skel; do
-	[ -e "$I" ] && create "$I/.hushlogin" < /dev/null
+	[ -e "$I" ] && my-config-cat "$I/.hushlogin" < /dev/null
+	[ -e "$I/.bashrc" ] && my-config-change-lines "$I/.bashrc" "#force_color_prompt=yes" "force_color_prompt=yes"
 done
 
 ####
 
 mkdir -p /etc/apt/apt.conf.d
 
-create /etc/apt/apt.conf.d/99my-config << EOF
+my-config-cat /etc/apt/apt.conf.d/99my-config << EOF
 APT::Install-Recommends "false";
 EOF
 
 ####
 
-mkdir -p /etc
+for I in 1 2 3 4 5 6 7 8 9; do
+	my-config-mkdir "/mnt/$I"
+done
 
-add_line /etc/tmux.conf 'set-window-option -g alternate-screen off'
+####
+
+my-config-add-line /etc/bash.bashrc 'if ! shopt -oq posix; then'
+my-config-add-line /etc/bash.bashrc '  if [ -f /usr/share/bash-completion/bash_completion ]; then'
+my-config-add-line /etc/bash.bashrc '    . /usr/share/bash-completion/bash_completion'
+my-config-add-line /etc/bash.bashrc '  elif [ -f /etc/bash_completion ]; then'
+my-config-add-line /etc/bash.bashrc '    . /etc/bash_completion'
+my-config-add-line /etc/bash.bashrc '  fi'
+my-config-add-line /etc/bash.bashrc 'fi'

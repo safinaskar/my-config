@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+[ $# != 3 ] && echo "Usage: ${0##*/} FILE REGEX NEW-LINE" >&2 && exit 1
+
+FILE="$1"
+REGEX="$2"
+NEW_LINE="$3"
+
+printf '%s\n' "$FILE" >> /opt/tpm-store/share/my-config/to-restore
+sed -i 's/^\('"$REGEX"'\)$/'"$NEW_LINE"' #my-config# \1/' "$FILE"

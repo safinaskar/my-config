@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+[ $# != 2 ] && echo "Usage: ${0##*/} FILE LINE" >&2 && exit 1
+
+FILE="$1"
+LINE="$2"
+
+printf '%s\n' "$FILE" >> /opt/tpm-store/share/my-config/to-restore
+printf '%s\n' "$LINE #my-config# " >> "$FILE"

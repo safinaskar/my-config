@@ -1,3 +1,10 @@
 PACKAGE='safinaskar/my-config'
-INSTALL='chmod +x my-config.prerm my-config.postinst && cp my-config.prerm my-config.postinst "$INFO"'
 ARCH='all'
+
+DEPENDS='prog:sed:sed prog:bash:bash'
+BUILD_DEPENDS='prog:cmake:cmake prog:make:make'
+LIBS=''
+INSTALL='[ -e CMakeCache.txt ] && echo "Failed: CMakeCache.txt" && exit 1;'\
+\
+'cd "$BUILD" && cmake -DCMAKE_INSTALL_PREFIX="$PREFIX" "$SRC" && make install'\
+'chmod +x my-config.postinst my-config.prerm && cp my-config.postinst my-config.prerm "$INFO"'
