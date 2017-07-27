@@ -12,28 +12,11 @@ mkdir -p /root /home /etc/skel
 for I in /root /home/* /etc/skel; do
 	[ -e "$I" ] && my-config-cat "$I/.hushlogin" < /dev/null
 	[ -e "$I/.bashrc" ] && my-config-change-lines "$I/.bashrc" "#force_color_prompt=yes" "force_color_prompt=yes"
+	rm -f "$I/.bash_logout"
 done
-
-####
-
-mkdir -p /etc/apt/apt.conf.d
-
-my-config-cat /etc/apt/apt.conf.d/99my-config << EOF
-APT::Install-Recommends "false";
-EOF
 
 ####
 
 for I in 1 2 3 4 5 6 7 8 9; do
 	my-config-mkdir "/mnt/$I"
 done
-
-####
-
-my-config-add-line /etc/bash.bashrc 'if ! shopt -oq posix; then'
-my-config-add-line /etc/bash.bashrc '  if [ -f /usr/share/bash-completion/bash_completion ]; then'
-my-config-add-line /etc/bash.bashrc '    . /usr/share/bash-completion/bash_completion'
-my-config-add-line /etc/bash.bashrc '  elif [ -f /etc/bash_completion ]; then'
-my-config-add-line /etc/bash.bashrc '    . /etc/bash_completion'
-my-config-add-line /etc/bash.bashrc '  fi'
-my-config-add-line /etc/bash.bashrc 'fi'
